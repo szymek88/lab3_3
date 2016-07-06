@@ -24,17 +24,17 @@ public class Order {
 
 	}
 
-	public void submit() {
+	public void submit(TimeSource timeSource) {
 		requireState(State.CREATED);
 
 		orderState = State.SUBMITTED;
-		subbmitionDate = new DateTime();
+		subbmitionDate = new DateTime(timeSource.currentTimeMilis());
 
 	}
 
-	public void confirm() {
+	public void confirm(TimeSource timeSource) {
 		requireState(State.SUBMITTED);
-		int hoursElapsedAfterSubmittion = Hours.hoursBetween(subbmitionDate, new DateTime()).getHours();
+		int hoursElapsedAfterSubmittion = Hours.hoursBetween(subbmitionDate, new DateTime(timeSource.currentTimeMilis())).getHours();
 		if(hoursElapsedAfterSubmittion > VALID_PERIOD_HOURS){
 			orderState = State.CANCELLED;
 			throw new OrderExpiredException();
